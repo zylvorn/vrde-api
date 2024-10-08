@@ -11,6 +11,8 @@ const multerMiddleWare = multer({ storage: multer.memoryStorage() }).fields([
   { name: 'images' },
 ])
 projectsRouter.get('/', usecase.getProject)
+projectsRouter.get('/tags', usecase.getTags)
+projectsRouter.get('/html', usecase.getHTML)
 projectsRouter.get('/getID/:id', usecase.getProjectByID)
 projectsRouter.put('/tags', checkToken, usecase.updateTags)
 projectsRouter.post(

@@ -48,7 +48,14 @@ const generateUUID = () => {
 
 class ProjectUseCase {
   async getProject(req: Request, res: Response) {
-    res.status(200).json(data)
+    console.log(data.projects)
+    res.status(200).json(data.projects)
+  }
+  async getTags(req: Request, res: Response) {
+    res.status(200).json(data.tags)
+  }
+  async getHTML(req: Request, res: Response) {
+    res.status(200).json(data.html)
   }
   async getProjectByID(req: Request, res: Response) {
     const tempData = data as TData
