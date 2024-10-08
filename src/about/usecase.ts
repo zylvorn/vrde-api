@@ -77,6 +77,7 @@ class AboutUseCase {
           })
         }
       })
+      // @ts-ignore
       tempData.clients = clients
       fs.writeFileSync(
         path.join(__dirname, '../data/about.json'),
