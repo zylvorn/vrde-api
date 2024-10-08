@@ -8,6 +8,6 @@ RUN mkdir src/data src/static src/static/home src/static/about src/static/projec
   echo '{"html":"", "image_path":""}' > src/data/home.json && \
   echo '{"projects":[], "tags":[], "html":""}' > src/data/projects.json
 
-RUN npm run build
+RUN npm install && npm run build
 CMD ["node", "src/index.js"]
 EXPOSE 8080
