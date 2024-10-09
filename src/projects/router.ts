@@ -10,6 +10,7 @@ const checkToken = AuthUseCase.checkToken
 const multerMiddleWare = multer({ storage: multer.memoryStorage() }).fields([
   { name: 'images' },
 ])
+projectsRouter.get('/all', usecase.getAllData)
 projectsRouter.get('/', usecase.getProject)
 projectsRouter.get('/tags', usecase.getTags)
 projectsRouter.get('/html', usecase.getHTML)

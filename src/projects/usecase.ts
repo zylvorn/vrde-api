@@ -47,6 +47,9 @@ const generateUUID = () => {
 }
 
 class ProjectUseCase {
+  async getAllData(req: Request, res: Response) {
+    res.status(200).json(data)
+  }
   async getProject(req: Request, res: Response) {
     res.status(200).json(data.projects)
   }
