@@ -13,7 +13,7 @@ class HomeUsecase {
       const file = req.file
       const pp = path.join(__dirname, '../static/home')
       if (file) {
-        const fileName = '/home' + path.extname(file.originalname)
+        const fileName = 'home' + path.extname(file.originalname)
         fs.writeFileSync(path.join(pp, fileName), file.buffer)
         tempData.image_path = `/static/home/${fileName}`
       }
