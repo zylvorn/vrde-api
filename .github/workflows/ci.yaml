@@ -2,10 +2,8 @@ name: DEV
 
 on:
   pull_request:
-    branches:
-      - master
-    types:
-      - closed
+    branches: ['master']
+    types: ['closed']
   workflow_dispatch:
 
 jobs:
