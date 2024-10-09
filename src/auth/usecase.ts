@@ -6,8 +6,6 @@ class AuthUseCase {
     const { username, password } = req.body
     const invalidUsername = username !== process.env.ADMIN_USERNAME
     const invalidPassword = password !== process.env.ADMIN_PASSWORD
-    console.log('body', username, password)
-    console.log('env', process.env.ADMIN_USERNAME, process.env.ADMIN_PASSWORD)
     if (invalidPassword || invalidUsername) {
       res.status(401).json({
         error: 'Invalid Username or Password',

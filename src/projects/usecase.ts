@@ -48,7 +48,6 @@ const generateUUID = () => {
 
 class ProjectUseCase {
   async getProject(req: Request, res: Response) {
-    console.log(data.projects)
     res.status(200).json(data.projects)
   }
   async getTags(req: Request, res: Response) {
