@@ -16,7 +16,13 @@ type TProjectFE = {
   date: string
   tags: TTag[]
   team: string
-  images: { name: string; id: string; isExisting?: boolean }[]
+  images: {
+    name: string
+    id: string
+    isExisting?: boolean
+    isCover?: boolean
+    isMain?: boolean
+  }[]
 }
 type TProject = {
   id: string
@@ -26,6 +32,8 @@ type TProject = {
   date: string
   tags: TTag[]
   team: string
+  cover_img?: string
+  main_img?: string
   images: string[]
 }
 type TData = {
@@ -87,6 +95,8 @@ class ProjectUseCase {
       const ssProject = req.body.data as string
       const project = JSON.parse(ssProject) as TProjectFE
       let images: string[] = []
+      let coverImages = ''
+      let mainImages = ''
       // @ts-ignore
       const files = (req.files?.images || []) as Express.Multer.File[]
       files.forEach((file) => {
@@ -94,6 +104,11 @@ class ProjectUseCase {
         const savePath = path.join(__dirname, '../static/projects', filename)
         fs.writeFileSync(savePath, file.buffer)
         images.push(filename)
+        const imgsFind = project.images.find((x) => x.id === file.fieldname)
+        if (imgsFind) {
+          if (imgsFind.isCover) coverImages = filename
+          if (imgsFind.isMain) mainImages = filename
+        }
       })
       const dataSaved: TProject = {
         id: project.id,
@@ -104,6 +119,8 @@ class ProjectUseCase {
         team: project.team,
         tags: project.tags,
         images: images,
+        cover_img: coverImages,
+        main_img: mainImages,
       }
       let tempData: TData = data
       tempData.projects = tempData.projects.concat(dataSaved)
@@ -123,6 +140,8 @@ class ProjectUseCase {
       // @ts-ignore
       const files = (req.files?.images || []) as Express.Multer.File[]
       let updatedImage: string[] = []
+      let coverImages = ''
+      let mainImages = ''
       project.images.forEach((image) => {
         if (!image.isExisting) {
           const imageFind = files.find((x) => x.originalname === image.name)
@@ -136,11 +155,17 @@ class ProjectUseCase {
             )
             fs.writeFileSync(savePath, imageFind.buffer)
             updatedImage.push(filename)
+            if (image.isCover) coverImages = filename
+            if (image.isMain) mainImages = filename
           } else {
             updatedImage.push(image.name)
+            if (image.isCover) coverImages = image.name
+            if (image.isMain) mainImages = image.name
           }
         } else {
           updatedImage.push(image.name)
+          if (image.isCover) coverImages = image.name
+          if (image.isMain) mainImages = image.name
         }
       })
       const dataSaved: TProject = {
@@ -152,7 +177,10 @@ class ProjectUseCase {
         images: updatedImage,
         tags: project.tags,
         team: project.team,
+        cover_img: coverImages,
+        main_img: mainImages,
       }
+      console.log(dataSaved)
       let tempData: TData = data
       tempData.projects = tempData.projects.map((item) => {
         if (item.id === project.id) {
