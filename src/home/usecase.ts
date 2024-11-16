@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import fs from 'fs'
 import path from 'path'
 import data from '../data/home.json'
-
+import projects from '../data/projects.json'
 class HomeUsecase {
   async getHome(req: Request, res: Response, next: NextFunction) {
     res.status(200).json(data)
@@ -24,6 +24,21 @@ class HomeUsecase {
         JSON.stringify(tempData)
       )
       res.status(200).json({ data: tempData, error: null })
+    } catch (error) {
+      res.status(500).json({ error })
+    }
+  }
+  async getShowProject(req: Request, res: Response) {
+    try {
+      const latestProject = projects.projects.find((x) => x.showOnHomeButton)
+      if (latestProject) {
+        res.status(200).json({
+          id: latestProject.id,
+          buttonTextHome: latestProject.buttonTextHome,
+        })
+      } else {
+        res.status(200).json({ id: null, buttonTextHome: null })
+      }
     } catch (error) {
       res.status(500).json({ error })
     }

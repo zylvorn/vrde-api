@@ -11,5 +11,6 @@ const multerMiddleWare = multer({ storage: multer.memoryStorage() }).single(
 )
 homeRouter.get('/', usecase.getHome)
 homeRouter.post('/', checkToken, multerMiddleWare, usecase.submitChangeData)
+homeRouter.get('/show-project', usecase.getShowProject)
 
 export default homeRouter

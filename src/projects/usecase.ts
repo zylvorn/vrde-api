@@ -16,6 +16,8 @@ type TProjectFE = {
   date: string
   tags: TTag[]
   team: string
+  showOnHomeButton?: boolean
+  buttonTextHome?: string
   images: {
     name: string
     id: string
@@ -35,6 +37,8 @@ type TProject = {
   cover_img?: string
   main_img?: string
   images: string[]
+  showOnHomeButton?: boolean
+  buttonTextHome?: string
 }
 type TData = {
   projects: TProject[]
@@ -121,9 +125,18 @@ class ProjectUseCase {
         images: images,
         cover_img: coverImages,
         main_img: mainImages,
+        showOnHomeButton: project.showOnHomeButton,
+        buttonTextHome: project.buttonTextHome,
       }
       let tempData: TData = data
-      tempData.projects = tempData.projects.concat(dataSaved)
+      const restProjects = tempData.projects.map((item) => {
+        if (item.showOnHomeButton) {
+          item.showOnHomeButton = false
+          item.buttonTextHome = ''
+        }
+        return item
+      })
+      tempData.projects = restProjects.concat(dataSaved)
       fs.writeFileSync(
         path.join(__dirname, '../data/projects.json'),
         JSON.stringify(tempData)
@@ -179,12 +192,17 @@ class ProjectUseCase {
         team: project.team,
         cover_img: coverImages,
         main_img: mainImages,
+        showOnHomeButton: project.showOnHomeButton,
+        buttonTextHome: project.buttonTextHome,
       }
-      console.log(dataSaved)
       let tempData: TData = data
       tempData.projects = tempData.projects.map((item) => {
         if (item.id === project.id) {
           return dataSaved
+        }
+        if (dataSaved.showOnHomeButton) {
+          item.showOnHomeButton = false
+          item.buttonTextHome = ''
         }
         return item
       })
