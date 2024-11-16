@@ -3,6 +3,7 @@ import fs from 'fs'
 import path from 'path'
 import data from '../data/home.json'
 import projects from '../data/projects.json'
+import { TProject } from '../projects/usecase'
 class HomeUsecase {
   async getHome(req: Request, res: Response, next: NextFunction) {
     res.status(200).json(data)
@@ -30,7 +31,8 @@ class HomeUsecase {
   }
   async getShowProject(req: Request, res: Response) {
     try {
-      const latestProject = projects.projects.find((x) => x.showOnHomeButton)
+      const p = projects.projects as TProject[]
+      const latestProject = p.find((x) => x.showOnHomeButton)
       if (latestProject) {
         res.status(200).json({
           id: latestProject.id,

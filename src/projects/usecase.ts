@@ -3,7 +3,7 @@ import data from '../data/projects.json'
 import fs from 'fs'
 import path from 'path'
 
-type TTag = {
+export type TTag = {
   name: string
   group: string
   id: string
@@ -26,7 +26,7 @@ type TProjectFE = {
     isMain?: boolean
   }[]
 }
-type TProject = {
+export type TProject = {
   id: string
   client: string
   location: string
