@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import data from '../data/projects.json'
 import fs from 'fs'
 import path from 'path'
+import cacheManager from '../config'
 
 export type TTag = {
   name: string
@@ -60,22 +61,53 @@ const generateUUID = () => {
 
 class ProjectUseCase {
   async getAllData(req: Request, res: Response) {
+    const dataChache = await cacheManager.get('getAllData')
+    if (dataChache) {
+      res.status(200).json(dataChache)
+      return
+    }
+    cacheManager.set('getAllData', data)
     res.status(200).json(data)
   }
   async getProject(req: Request, res: Response) {
+    const dataChache = await cacheManager.get('getProject')
+    if (dataChache) {
+      res.status(200).json(dataChache)
+      return
+    }
+    cacheManager.set('getProject', data.projects)
     res.status(200).json(data.projects)
   }
   async getTags(req: Request, res: Response) {
+    const dataChache = await cacheManager.get('getTags')
+    if (dataChache) {
+      res.status(200).json(dataChache)
+      return
+    }
+    cacheManager.set('getTags', data.tags)
     res.status(200).json(data.tags)
   }
   async getHTML(req: Request, res: Response) {
+    const dataChache = await cacheManager.get('getHTML')
+    if (dataChache) {
+      res.status(200).json(dataChache)
+      return
+    }
+    cacheManager.set('getHTML', data.html)
     res.status(200).json(data.html)
   }
   async getProjectByID(req: Request, res: Response) {
     const tempData = data as TData
+    const dataChache = await cacheManager.get(req.params.id)
+    if (dataChache) {
+      res.status(200).json(dataChache)
+      return
+    }
+
     const dataItem = tempData.projects.find((x) => x.id === req.params.id)
     if (dataItem) {
       res.status(200).json(dataItem)
+      cacheManager.set(req.params.id, dataItem)
     } else {
       res.status(404).json('Not found')
     }
@@ -90,6 +122,8 @@ class ProjectUseCase {
         JSON.stringify(tempData)
       )
       res.status(200).json({ data: tempData.tags, error: null })
+      cacheManager.del('getTags')
+      cacheManager.set('getTags', tempData.tags)
     } catch (error) {
       res.status(500).json({ error })
     }
@@ -142,6 +176,10 @@ class ProjectUseCase {
         JSON.stringify(tempData)
       )
       res.status(200).json({ data: tempData.projects, error: null })
+      cacheManager.del('getAllData')
+      cacheManager.del('getProject')
+      cacheManager.set('getProject', tempData.projects)
+      cacheManager.set('getAllData', tempData)
     } catch (error) {
       res.status(500).json({ error })
     }
@@ -211,6 +249,10 @@ class ProjectUseCase {
         JSON.stringify(tempData)
       )
       res.status(200).json({ data: tempData.projects, error: null })
+      cacheManager.del('getAllData')
+      cacheManager.del('getProject')
+      cacheManager.set('getProject', tempData.projects)
+      cacheManager.set('getAllData', tempData)
     } catch (error) {
       console.log(error)
       res.status(500).json({ error })
@@ -224,6 +266,7 @@ class ProjectUseCase {
       path.join(__dirname, '../data/projects.json'),
       JSON.stringify(tempData)
     )
+    cacheManager.del('getAllData')
     res.status(200).json({ data: tempData.html, error: null })
   }
   async deleteProject(req: Request, res: Response) {
@@ -236,6 +279,8 @@ class ProjectUseCase {
       path.join(__dirname, '../data/projects.json'),
       JSON.stringify(tempData)
     )
+    cacheManager.del('getAllData')
+    cacheManager.del('getProject')
     res.status(200).json({ data: dataFiltered, error: null })
   }
 }
