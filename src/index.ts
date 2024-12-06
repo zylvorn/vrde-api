@@ -14,7 +14,6 @@ const app = express()
 app.use(cors())
 const staticPath = path.join(__dirname, 'static')
 app.use('/static', (_, res, next) => {
-  console.log('setting cache control')
   res.setHeader('Cache-Control', 'public, max-age=2592000') // 1 month
   next()
 })
